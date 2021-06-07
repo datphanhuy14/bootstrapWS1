@@ -4,7 +4,9 @@
 <br/>
 <script>
 var i = 1;
-var abc = '{{ abc }}';
+var abc = `{{ abc }}`;
+console.log(abc);
+console.log(typeof abc)
 var abcd = abc.split(',')  
 console.log(abcd);
 $(document).ready(function(){ 
@@ -28,7 +30,7 @@ $(document).ready(function(){
 });
 function deleteList(listId) {
                 deleteList = document.getElementById(`list${i}`);
-                console.log(deleteList);
+                console.log(deleteList); 
                 list.removeChild(deleteList);
         }   
 </script>
