@@ -1,0 +1,35 @@
+{% extends "home.html" %}
+
+{% block table %}
+<br/>
+<script>
+var i = 1;
+var abc = '{{ abc }}';
+var abcd = abc.split(',')  
+console.log(abcd);
+$(document).ready(function(){ 
+       if (abcd[i] == null) {
+          console.log('null');
+      }
+      else { 
+    for(i = 0; i <abcd.length; i++) {
+      if (abcd[i] == null) {
+          console.log('null');
+      }
+      else {
+          $("#list").append(`<li id='list${i}'><input class='checkbox' type='checkbox' onclick='check(${i})' /> <span class='todo-text'> ${abcd[i]} </span>
+           <a class='remove text-right'><i class='fa fa-trash' onclick="deleteList(${i})"></i></a>
+    <hr>
+</li>`);
+                console.log(i)
+      }
+      }
+}
+});
+function deleteList(listId) {
+                deleteList = document.getElementById(`list${i}`);
+                console.log(deleteList);
+                list.removeChild(deleteList);
+        }   
+</script>
+{% endblock %}

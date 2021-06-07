@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="main-todo-input-wrap">
+            <div class="main-todo-input fl-wrap">
+                <div class="main-todo-input-item"> <input type="text" id="content" placeholder="What will you do today?"> </div> <button id="submit" class="add-items main-search-button">ADD</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="main-todo-input-wrap">
+            <div class="main-todo-input fl-wrap todo-listing">
+                <ul id="list" class="list">
+                {% block table %}
+                {% endblock %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{# <progress id="file" value="($(":checkbox:checked").length)" max="${i}"> </progress> max = count i #}
+{% endblock %}
+{% block js %}
+<script>
+    $(document).ready(function(){
+        var content,chkValue;
+       var i = 1;
+       var uid = 0;
+    $("#submit").click(function(){
+        content = $("#content").val();
+        chkValue = $('#checkbox').is(':checked');
+        $.post("/", { id : Math.ceil(event.timeStamp) , myWork: content , checkedbox: chkValue } ,  (data) => {
+           var rowForm = `<li id='list${i}'><input id='checkbox' class='checkbox' type='checkbox' value='${chkValue}' onclick=check(${i}) /> <span class='todo-text'> ${data} </span>
+           <a class='remove text-right'><i class='fa fa-trash' onclick="deleteList(${i})"></i></a>
+    <hr>
+</li>`
+             /* `<li class="list-item" id='list${i}'>
+                                        <div id="listText">
+                                            <span id="listText${i}">${data}</span> 
+                                            <input type="checkbox" id="check${i}" >
+                                            <i class="fas fa-trash text-danger" onclick="deleteList(${i})"></i>
+                                    </div>
+                                    
+                                </li>
+                `; // Tham khao github. */
+           i++;
+           $("#list").append(rowForm);
+        });
+    });
+    });
+
+   function deleteList(listId) {
+                let deleteList = document.getElementById('list'+listId);
+                console.log('list'+listId)
+                console.log(deleteList)
+                list.removeChild(deleteList);
+ }
+</script>
+{% endblock %}
