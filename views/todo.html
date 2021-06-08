@@ -32,9 +32,10 @@ $(document).ready(function(){
     }
 function deleteList(listId) {
                 deleteList = document.getElementById(`list${i}`);
-                console.log(deleteList); 
+                console.log(deleteList);
                 list.removeChild(deleteList);
                 $.post("/post", { delId : listId });
+                
         }   
 </script>
 {% endblock %}
