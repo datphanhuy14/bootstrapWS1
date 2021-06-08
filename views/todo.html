@@ -21,14 +21,19 @@ $(document).ready(function(){
            <a class='remove text-right'><i class='fa fa-trash' onclick="deleteList(${i})"></i></a>
     <hr>
 </li>`);
-                console.log(i)
+                console.log(`${fixabc[i].checkedbox}`)
       }
       }
 });
+    function check(chk){
+        const chek = `${fixabc[chk].checkedbox }`;
+        $.post("/checkbox", { checkbox  :  chek });
+    }
 function deleteList(listId) {
                 deleteList = document.getElementById(`list${i}`);
                 console.log(deleteList); 
                 list.removeChild(deleteList);
+                $.post("/post", { delId : listId });
         }   
 </script>
 {% endblock %}
