@@ -13,7 +13,7 @@ router.get('/', function(req, res){
       // console.log(xyz);
       // console.log(typeof(xyz))
     if(req.session.key)   
-    res.render('todo.html', {abc : xyz})}
+    res.render('home.html', {abc : xyz})}
   else {
   abc = [...req.session.key];  // Gán mảng abc = value session.key   
   var xyz = {abc}  //  Session bị bọc bởi mảng nên cần loại bỏ để không bị lỗi lúc truyền sang client;
@@ -21,7 +21,7 @@ router.get('/', function(req, res){
     // console.log(xyz);
     // console.log(typeof(xyz))
   if(req.session.key)   
-  res.render('todo.html', {abc : xyz})
+  res.render('home.html', {abc : xyz})
   }
 });
 router.post('/', function(req, res) {
@@ -45,16 +45,16 @@ router.post('/checkbox', function(req, res){
     req.session.key.checkedbox = false;
     // Change html ...
 })
-router.post('/post', function(req, res) {
-    const del = req.body.delId;
+router.post('/post', function(req, res) { 
+    const del = req.body.id;
     console.log(del);
     abc.splice(del,1);
     console.log(abc)
     req.session.key2 = [...abc];
     var xyz = {...req.session.key2}
     xyz = JSON.stringify(req.session.key2)
-    res.render('todo.html', { abc : req.session.key2})
-
+    res.render('home.html', { abc : req.session.key2})
+    delete req.session.key; // Delete value old session to avoid error
 })
 // router.get('/a', function(req, res, next) {
 //     req.session = req.body.key;

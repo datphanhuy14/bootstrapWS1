@@ -28,7 +28,7 @@ redisClient.on('connect', function() {
   console.log('connected');
   });
 // view engine setup
-
+app.set('view engine', 'html')
 nunjucks.configure('views', {
     autoescape: true,
     express: app
@@ -69,6 +69,6 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error' , {err : err.message});
 });
 module.exports = app;
