@@ -7,58 +7,40 @@ const nunjucks = require('nunjucks');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const redis = require('redis')
-const session = require('express-session')
+var client = redis.createClient()
+// const session = require('express-session')
 const app = express();
 
-const REDIS_PORT = process.env.PORT || 6379;
+// let RedisStore = require('connect-redis')(session)
 
-let RedisStore = require('connect-redis')(session)
-let redisClient = redis.createClient(REDIS_PORT)
-
-app.use(
-  session({
-    store: new RedisStore({ client: redisClient }),
-    saveUninitialized: false,
-    secret: 'Zesx',
-    resave: true,
-  })
-)
-// CHECK REDIS CONNECT
-redisClient.on('connect', function() {
-  console.log('connected');
-  });
+var idList = [];
+var listValue = [];
 // view engine setup
-app.set('view engine', 'html')
+app.set('view engine', 'html');
 nunjucks.configure('views', {
     autoescape: true,
     express: app
 });
 
+client.on("error", function(error) {
+  console.error(error);
+});        
+
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(function(req, res, next) {
-  if (!req.session.key){
-    console.log('false')
-    req.session.key = [];
-  }else{
-    console.log('Have Key :TRUE')
-  }
-  next();
-});
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  // console.log('mmmmmm')
-  if (!req.session.key){
+
+  if (err){
     console.log('false')
-    req.session.key = [];
-  }else{
-    console.log('TRUE')
+    }else{
+    console.log(err)
   }
   next(createError(404));
 });

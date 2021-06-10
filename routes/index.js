@@ -1,62 +1,59 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
-var abc = [];
-/* GET home page   */
-router.get('/', function(req, res){
-  console.log("key 1 :"+ req.session.key)
-  console.log("key 2 :"+ req.session.key2)
+const redis = require("redis").createClient();
+var redisScan = require("redisscan");
+const async = require("async");
 
-  if(req.session.key2 != null) {
-    abc = [...req.session.key2]; 
-    var xyz = {abc}  
-    xyz = JSON.stringify(abc); // String Json - JSON
-      // console.log(xyz);
-      // console.log(typeof(xyz))
-    if(req.session.key)   
-    res.render('home.html', {abc : xyz})}
-  else {
-  abc = [...req.session.key];  // Gán mảng abc = value session.key   
-  var xyz = {abc}  //  Session bị bọc bởi mảng nên cần loại bỏ để không bị lỗi lúc truyền sang client;
-  xyz = JSON.stringify(abc); // String Json - JSON
-    // console.log(xyz);
-    // console.log(typeof(xyz))
-  if(req.session.key)   
-  res.render('home.html', {abc : xyz})
-  }
+var listValue = [];
+var keyId = [];
+
+router.get("/", function (req, res) {
+   // REdis Get
+    var jobs = [];
+    redis.keys('*', function (err, keys) {
+        if (err) return console.log(err);
+        if(keys){
+            async.map(keys, function(key, cb) {
+               redis.get(key, function (error, value) {
+                    if (error) return cb(error);
+                    var todo = {};
+                    todo['key']=key;
+                    todo['data']=value;
+                    cb(null, todo);
+                }); 
+            }, function (error, results) {
+               if (error) return console.log(error);
+               console.log(typeof JSON.stringify(results));
+               res.render('home.html',{ data :JSON.stringify(results)});
+            });
+        }
+    });
+
 });
-router.post('/', function(req, res) {
-    if(req.session.key2 == null) {
-      req.session.key.push(JSON.parse(JSON.stringify( req.body))); // delete [Object:  undefined ]
-      // console.log(req.body)
-      // console.log(req.session.key);
-      res.json(req.body.myWork)}
-    else {
-      req.session.key2.push(JSON.parse(JSON.stringify(req.body))); // delete [Object:  undefined ]
-      // console.log(req.body)
-      // console.log(req.session.key);
-      res.json(req.body.myWork)}
-    })
-router.post('/checkbox', function(req, res){
-  const chk = req.body.checkbox;
-  console.log(chk);
-    if (req.session.key.checkedbox == false)
-    req.session.key.checkedbox = true;
-    else 
-    req.session.key.checkedbox = false;
-    // Change html ...
-})
-router.post('/post', function(req, res) { 
-    const del = req.body.id;
-    console.log(del);
-    abc.splice(del,1);
-    console.log(abc)
-    req.session.key2 = [...abc];
-    var xyz = {...req.session.key2}
-    xyz = JSON.stringify(req.session.key2)
-    res.render('home.html', { abc : req.session.key2})
-    delete req.session.key; // Delete value old session to avoid error
-})
-// router.get('/a', function(req, res, next) {
-//     req.session = req.body.key;
-// });
+// Post data &
+router.post("/", function (req, res) {
+  redis.set(
+    `todoList_${req.body.id}`,
+    JSON.stringify({
+      id: req.body.id,
+      myWork: req.body.myWork,
+      checkbox: req.body.checkedbox,
+    }),
+    function (err, rep) {
+      keyId.push(req.body.id);
+      console.log(keyId);
+    }
+  );    
+  redis.get(`todoList_${req.body.id}`, function (err, reply) {
+    listValue.push(reply);
+    console.log(reply);
+    console.log(listValue);
+  });
+  res.json(req.body.myWork);    
+});
+router.post("/checkbox", function (req, res) {
+  // Change  ...
+});
+router.post("/post", function (req, res) {});
+
 module.exports = router;

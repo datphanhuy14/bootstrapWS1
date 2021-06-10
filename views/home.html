@@ -24,42 +24,45 @@
 {% endblock %}
 {% block js %}
 <script>
-    var abc = `{{ abc }}`;
-    var fixabc = JSON.parse(abc.replace(/&quot;/g,'"'));
+    
     $(document).ready(function(){
-        //
-            if (fixabc == null) {
+    var data = `{{ data }}`;
+    var keyId = `{{ keyId }}` ;
+
+    var fixdata = data.replace(/&quot;/g,'"').replace(/,{/g,'#{').slice(1,-1).slice(1,-1);
+    console.log(fixdata);
+    console.log(typeof fixdata);
+    
+   /*   if (fixabc == null) {
           console.log('null');
       }
       else { 
-    for(let i = 0; i <fixabc.length; i++) {
+   for(let i = 0; i <fixabc.length; i++) {
         if(fixabc[i].myWork)
           $("#list").append(`<li id='${fixabc[i].id}'><input class='checkbox' type='checkbox' onclick='check(${fixabc[i].id})' value='${fixabc[i].checkedbox}' /> <span class='todo-text'> ${fixabc[i].myWork} </span>
            <a class='remove text-right'><i class='fa fa-trash' onclick="deleteList(${fixabc[i].id})"></i></a>
     <hr>
 </li>`);
-                console.log(`${fixabc[i].checkedbox}`)
       }
-      }
-
+      }    */
 //
     $("#submit").click(function(){
         var content,chkValue;
         var id = Date.now();
         content = $("#content").val();
         chkValue = $('#checkbox').is(':checked');
-        $.post("/", { id : id , myWork: content , checkedbox: chkValue } ,  (data) => {
+        $.post("/", { id : id , myWork: content , checkedbox: chkValue } ,  (data) => { 
            var rowForm = `<li id='${id}'><input id='checkbox' class='checkbox' type='checkbox' value='${chkValue}' onclick=check(${id}) /> <span class='todo-text'> ${data} </span>
            <a class='remove text-right'><i class='fa fa-trash' onclick="deleteList(${id})"></i></a>
     <hr> 
 </li>`
-           $("#list").append(rowForm);
+           $("#list").append(rowForm);  
         });
+    });
     });
 // ============================================================================
 
 
-});
     function check(chk){
         const chek = `${fixabc[chk].checkedbox }`;
         $.post("/checkbox", { checkbox  :  chek });

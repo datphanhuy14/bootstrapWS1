@@ -17,10 +17,12 @@
     "nodemon": "^2.0.7",
     "nunjucks": "^3.2.3",
     "redis": "^3.1.2",
+    "redis-node": "^0.4.0",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "kill-port": "^1.6.1",
-    "node-sass": "^5.0.0"
+    "node-sass": "^5.0.0",
+    "redisscan": "^2.0.0"
   }
 }
