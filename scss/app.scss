@@ -1,5 +1,5 @@
 body {
-    background-color: #8f4df8
+    background-color: #9db9df
   }
   
   .main-todo-input {
@@ -112,7 +112,7 @@ body {
   
   #list-items {
     padding-left: 20px;
-    padding-top: 15px
+    padding-top: 10px
   }
   
   ul {
@@ -133,4 +133,8 @@ body {
   .todo-listing {
     padding: 0px 29px 0 0;
     margin-top: 54px !important
+  }
+  
+  li{
+    margin : 10px
   }

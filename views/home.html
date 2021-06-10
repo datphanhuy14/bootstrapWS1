@@ -24,55 +24,69 @@
 {% endblock %}
 {% block js %}
 <script>
+    /* lay du lieu tu server */
+    var data = `{{ data | dump | safe }}`;
+     /* convert kieu string sang obj (array => json) */
+    data = JSON.parse(data);
+    {# console.log(JSON.stringify(data,2,2)); #}
     
-    $(document).ready(function(){
-    var data = `{{ data }}`;
-    var keyId = `{{ keyId }}` ;
-
-    var fixdata = data.replace(/&quot;/g,'"').replace(/,{/g,'#{').slice(1,-1).split('#'); // format string [ {"key",{"id","myWork","checkbox"} } ]
-    console.log(JSON.parse(JSON.stringify(fixdata[0])));
-    console.log(typeof fixdata[0]);
-    
-   /*   if (fixabc == null) {
-          console.log('null');
-      }
-      else { 
-   for(let i = 0; i <fixabc.length; i++) {
-        if(fixabc[i].myWork)
-          $("#list").append(`<li id='${fixabc[i].id}'><input class='checkbox' type='checkbox' onclick='check(${fixabc[i].id})' value='${fixabc[i].checkedbox}' /> <span class='todo-text'> ${fixabc[i].myWork} </span>
-           <a class='remove text-right'><i class='fa fa-trash' onclick="deleteList(${fixabc[i].id})"></i></a>
-    <hr>
-</li>`);
-      }
-      }    */
-//
-    $("#submit").click(function(){
-        var content,chkValue;
+    $(document).ready(function() {
+        for (var i = 0 ; i < data.length ; i++) {
+            $("#list").append(`
+                <li id='${data[i].id}'>
+                    <input  id='checkbox${data[i].id}' type='checkbox' onclick='check(${data[i].id})' value='${data[i].checkbox}' ${data[i].check} /> 
+                    <span id='content_${data[i].id}' class='todo-text'> ${data[i].myWork} </span>
+                    <a class='remove text-right'>
+                        <i class='fa fa-trash' onclick="deleteList(${data[i].id})"></i>
+                    </a>
+                    <hr>
+                </li>`);
+        }
+    });
+     //              ONCLICK submit 
+// ============================================================================
+    $("#submit").click(function() {
+        let content,chkValue = 0;
         var id = Date.now();
+        var checked = "";
         content = $("#content").val();
-        chkValue = $('#checkbox').is(':checked');
-        $.post("/", { id : id , myWork: content , checkedbox: chkValue } ,  (data) => { 
-           var rowForm = `<li id='${id}'><input id='checkbox' class='checkbox' type='checkbox' value='${chkValue}' onclick=check(${id}) /> <span class='todo-text'> ${data} </span>
-           <a class='remove text-right'><i class='fa fa-trash' onclick="deleteList(${id})"></i></a>
-    <hr> 
-</li>`
-           $("#list").append(rowForm);  
+        $.post("/", { id : id , myWork: content , checkbox: chkValue, check : checked} ,  (data) => { 
+            var rowForm = `
+            <li id='${id}'>
+                <input id='checkbox${id}' class='checkbox' type='checkbox' value='${chkValue}'  onclick='check(${id})'      ${checked}) />
+                <span id='content_${id}' class='todo-text'> ${data} </span>
+                <a class='remove text-right'>   
+                    <i class='fa fa-trash' onclick="deleteList(${id})"></i>
+                </a>
+                <hr> 
+            </li>`
+            $("#list").append(rowForm);  
         });
     });
-    });
-// ============================================================================
 
+        // Onclick check
+// ===================================================
+    function check(chk){    
+        console.log(data) 
+        for (var i = 0; i < data.length; i++) { // Tìm phần nội dung dựa theo ID 
+            if (data[i].id == chk) {            
+                var contenta = data[i].myWork;
+                var checkValue = data[i].checkbox;  // Gán nội dung cho 1 biến content mới
+                console.log(contenta);
+                console.log(checkValue);
+            }
+        }
+        var checkstt = document.querySelector(`#checkbox${chk}`).checked;
+        $.post('/checkbox', { checkStatus : checkstt , myWork : contenta,  idCheck : chk, checkbox : checkValue }) // Post to server 
+    }   
 
-    function check(chk){
-        const chek = `${fixabc[chk].checkedbox }`;
-        $.post("/checkbox", { checkbox  :  chek });
+    // DELETE KEY 
+    function deleteList(listId) { 
+        let deleteList = document.getElementById(listId); 
+        console.log(listId) 
+        console.log(deleteList)
+        list.removeChild(deleteList);
+        $.post("/post", { delId : listId});
     }
-   function deleteList(listId) {
-                let deleteList = document.getElementById(listId);
-                console.log(listId)
-                console.log(deleteList)
-                list.removeChild(deleteList);
-                $.post("/post", { delId : listId });
- }
 </script>
 {% endblock %}
