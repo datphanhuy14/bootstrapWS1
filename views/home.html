@@ -29,9 +29,9 @@
     var data = `{{ data }}`;
     var keyId = `{{ keyId }}` ;
 
-    var fixdata = data.replace(/&quot;/g,'"').replace(/,{/g,'#{').slice(1,-1).slice(1,-1);
-    console.log(fixdata);
-    console.log(typeof fixdata);
+    var fixdata = data.replace(/&quot;/g,'"').replace(/,{/g,'#{').slice(1,-1).split('#'); // format string [ {"key",{"id","myWork","checkbox"} } ]
+    console.log(JSON.parse(JSON.stringify(fixdata[0])));
+    console.log(typeof fixdata[0]);
     
    /*   if (fixabc == null) {
           console.log('null');

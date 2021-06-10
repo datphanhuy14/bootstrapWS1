@@ -24,7 +24,7 @@ router.get("/", function (req, res) {
             }, function (error, results) {
                if (error) return console.log(error);
                console.log(typeof JSON.stringify(results));
-               res.render('home.html',{ data :JSON.stringify(results)});
+               res.render('home.html',{ data :JSON.stringify(results)});  // ! chuyển định giạng object của results sang string để truyển qua biến data về client
             });
         }
     });
