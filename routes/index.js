@@ -44,11 +44,11 @@ router.post("/", function (req, res) {
       console.log(keyId);
     }
   );    
-  redis.get(`todoList_${req.body.id}`, function (err, reply) {
-    listValue.push(reply);
-    console.log(reply);
-    console.log(listValue);
-  });
+  // redis.get(`todoList_${req.body.id}`, function (err, reply) {
+  //   listValue.push(reply);
+  //   console.log(reply);                // TODO:Lúc refresh lại server thì không thể get được listValue. 
+  //   console.log(listValue);
+  // });
   res.json(req.body.myWork);    
 });
 router.post("/checkbox", function (req, res) {
